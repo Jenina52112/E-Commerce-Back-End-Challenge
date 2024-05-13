@@ -56,23 +56,21 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  // update a category by its `id` value
+  // // update a category by its `id` value
   try {
-    const categoryId = req.params.id;
-    const updatedCategoryData = req.body;
+    const categoryId = req.params.id; // Extract category ID from request parameters
+    const updatedCategoryData = req.body; // Extract updated category data from request body
 
-    // Update the category with the given id using the data from the request body
-    const [rowsUpdated, [updatedCategory]] = await Category.update(updatedCategoryData, {
-      where: { id: categoryId }, // Filter by id parameter in the URL
-      returning: true // Return the updated category data
-    });
+    // Add your logic here to update the category with the given ID using the updated category data
 
-    if (rowsUpdated === 0) {
-      // If no category is updated (i.e., category with the given id not found), send 404 Not Found response
-      return res.status(404).json({ error: 'Category not found' });
+    // Example logic:
+    const category = await Category.findByPk(categoryId); // Find category by ID
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' }); // Category not found
     }
-    
-    res.json(updatedCategory); // Send response with the updated category data
+    await category.update(updatedCategoryData); // Update category with new data
+    res.json(category); // Send response with updated category
+
   } catch (err) {
     console.error('Error updating category:', err);
     res.status(500).json({ error: 'Internal server error' });
