@@ -32,7 +32,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // create new product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -41,26 +41,30 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  Product.create(req.body)
-    .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
-        const productTagIdArr = req.body.tagIds.map((tag_id) => {
-          return {
-            product_id: product.id,
-            tag_id,
-          };
-        });
-        return ProductTag.bulkCreate(productTagIdArr);
+    try {
+      // Extract data from the request body
+      const { product_name, price, stock, tagIds } = req.body;
+  
+      // Validate the extracted data (optional step depending on your application requirements)
+  
+      // Create a new product in the database
+      const newProduct = await Product.create({
+        product_name,
+        price,
+        stock
+      });
+  
+      // If tagIds are provided, associate them with the newly created product
+      if (tagIds && tagIds.length > 0) {
+        await newProduct.addTags(tagIds); // Assuming you have a many-to-many relationship between Product and Tag
       }
-      // if no product tags, just respond
-      res.status(200).json(product);
-    })
-    .then((productTagIds) => res.status(200).json(productTagIds))
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+  
+      // Send a success response with the newly created product
+      res.status(201).json(newProduct);
+    } catch (err) {
+      console.error('Error creating product:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // update product
