@@ -1,6 +1,6 @@
 
 # E-Commerce Back End Challenge    
-# [WATCH WALKTROUGH VIDEO HERE]()
+# [WATCH WALKTROUGH VIDEO HERE](https://youtu.be/jn6nlFLVbZ4?si=H8Gi5mdbpE_oYIlW)
 ![alt text](image.png)
 ## Table of Contents
 - [Description](#description)

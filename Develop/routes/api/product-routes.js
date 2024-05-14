@@ -45,8 +45,6 @@ router.post('/', async (req, res) => {
       // Extract data from the request body
       const { product_name, price, stock, tagIds } = req.body;
   
-      // Validate the extracted data (optional step depending on your application requirements)
-  
       // Create a new product in the database
       const newProduct = await Product.create({
         product_name,
@@ -77,7 +75,6 @@ router.put('/:id', (req, res) => {
   })
     .then((product) => {
       if (req.body.tagIds && req.body.tagIds.length) {
-
         ProductTag.findAll({
           where: { product_id: req.params.id }
         }).then((productTags) => {
